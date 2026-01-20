@@ -1,52 +1,60 @@
+![claudecode-sounds banner](wc3-ccsounds.png)
+
 # claudecode-sounds
 
-Play sounds when Claude Code needs your attention.
+> *"Your sound card works perfectly."*
 
-## Features
+The spirits of Azeroth now herald your coding endeavors. When Claude Code requires your counsel, the ancient sounds of Warcraft III shall summon you back to the battlefield of code.
 
-- **Question sound**: Plays when Claude asks you a question
-- **Complete sound**: Plays when Claude finishes a task
-- **Notification sound**: Plays on system notifications
-- **Cross-platform**: Works on macOS, Linux, and Windows
+## The Call to Arms
 
-## Soundpacks
+- **Question Sound** — *"My liege?"* — Claude seeks your wisdom
+- **Complete Sound** — *"Job's done!"* — Your task stands victorious
+- **Error Sound** — *"That was a mistake."* — Dark forces have intervened
+- **Permission Sound** — *"Are you sure?"* — Authorization required, Commander
 
-Included soundpacks:
-- `warcraft3-en` - Warcraft 3 (English) - default
-- `warcraft3-ru` - Warcraft 3 (Русский)
+## Available Soundpacks
 
-## Installation
+| Soundpack | Description |
+|-----------|-------------|
+| `warcraft3-en` | Warcraft 3 (English) — *default* |
+| `warcraft3-ru` | Warcraft 3 (Русский) |
 
-### From Marketplace (Recommended)
+## Summoning the Plugin
+
+### From the Marketplace (Recommended)
 
 ```bash
 # Add the marketplace
 /plugin marketplace add newink/codingagents
 
-# Install the plugin
+# Summon the plugin
 /plugin install claudecode-sounds@codingagents
 ```
 
-### Manual Installation
+### Manual Summoning
 
 ```bash
-# Clone or copy to your plugins directory
+# Channel the plugin directly
 claude --plugin-dir /path/to/claudecode-sounds
 ```
 
-Or add to a project:
+Or bind it to your project stronghold:
 ```bash
 cp -r claudecode-sounds /your/project/.claude-plugin/
 ```
 
-## Commands
+## Battle Commands
 
-- `/sounds` - Show status and test sounds
-- `/sounds-set <name>` - Change soundpack (e.g., `/sounds-set warcraft3-en`)
+| Command | Effect |
+|---------|--------|
+| `/sounds` | Display current soundpack and test the war horns |
+| `/sounds-set <name>` | Switch soundpacks (e.g., `/sounds-set warcraft3-ru`) |
+| `/soundpack-create` | Forge a new custom soundpack |
 
-## Configuration
+## Configuration Scroll
 
-Settings are stored in `.claude/claudecode-sounds.local.md`:
+Your settings are inscribed in `.claude/claudecode-sounds.local.md`:
 
 ```markdown
 ---
@@ -54,19 +62,21 @@ soundpack: warcraft3-en
 ---
 ```
 
-## Creating Custom Soundpacks
+## Forging Custom Soundpacks
 
-1. Create a folder in `soundpacks/` with your pack name
-2. Add these sound files (WAV format):
-   - `question.wav` - Played when Claude asks a question
-   - `complete.wav` - Played when task completes
-   - `error.wav` - Played on errors
-   - `permission.wav` - Played when permission needed
-3. Create `soundpack.json`:
+Craft your own legendary soundpack:
+
+1. Create a new stronghold in `soundpacks/` with your pack name
+2. Arm it with these sound files (WAV format):
+   - `question.wav` — The call for guidance
+   - `complete.wav` — The victory fanfare
+   - `error.wav` — The cry of defeat
+   - `permission.wav` — The request for authority
+3. Inscribe the `soundpack.json` manifest:
    ```json
    {
-     "name": "My Soundpack",
-     "description": "Description of sounds",
+     "name": "My Legendary Soundpack",
+     "description": "Sounds forged in the fires of Mount Hyjal",
      "sounds": {
        "question": "question.wav",
        "complete": "complete.wav",
@@ -76,17 +86,21 @@ soundpack: warcraft3-en
    }
    ```
 
-## Requirements
+## System Requirements
 
 ### macOS
-Built-in `afplay` (no additional software needed)
+The native `afplay` enchantment suffices. No additional artifacts required.
 
 ### Linux
-One of: `paplay` (PulseAudio), `aplay` (ALSA), `mpv`, or `ffplay`
+One of these audio conduits: `paplay` (PulseAudio), `aplay` (ALSA), `mpv`, or `ffplay`
 
 ### Windows
-PowerShell (built-in) or `mpv`
+PowerShell (built-in sorcery) or `mpv`
+
+---
+
+*"What is it now?"*
 
 ## License
 
-Sound files from Warcraft 3 are property of Blizzard Entertainment.
+Sound files from Warcraft 3 are property of Blizzard Entertainment. For the Horde! (And the Alliance, we suppose.)

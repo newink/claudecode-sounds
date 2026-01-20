@@ -1,0 +1,10 @@
+{
+  "name": "Warcraft 3 (Русский)",
+  "description": "Озвучка Warcraft 3 на русском языке",
+  "sounds": {
+    "question": "question.wav",
+    "complete": "complete.wav",
+    "error": "error.wav",
+    "permission": "permission.wav"
+  }
+}

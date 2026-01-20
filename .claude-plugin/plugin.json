@@ -1,0 +1,9 @@
+{
+  "name": "claudecode-sounds",
+  "version": "1.0.0",
+  "description": "Play sounds when Claude Code needs your attention",
+  "author": {
+    "name": "newink"
+  },
+  "keywords": ["sounds", "notifications", "audio", "warcraft"]
+}

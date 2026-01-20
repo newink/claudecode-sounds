@@ -1,0 +1,10 @@
+{
+  "name": "Warcraft 3 (English)",
+  "description": "Classic Warcraft 3 interface sounds",
+  "sounds": {
+    "question": "question.wav",
+    "complete": "complete.wav",
+    "error": "error.wav",
+    "permission": "permission.wav"
+  }
+}

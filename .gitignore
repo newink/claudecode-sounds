@@ -1,0 +1,4 @@
+*.rar
+*.zip
+.DS_Store
+.claude/*.local.md

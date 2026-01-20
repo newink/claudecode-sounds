@@ -1,6 +1,7 @@
 ---
-name: claudecode-sounds:sounds-set
+name: claudecode-sounds:soundpack-set
 description: Change the active soundpack
+prefix-required: true
 argument-hint: "<soundpack-name>"
 allowed-tools:
   - Read

@@ -1,6 +1,7 @@
 ---
 name: claudecode-sounds:soundpack-create
 description: Create a custom soundpack from your own WAV files
+prefix-required: true
 allowed-tools:
   - Read
   - Write

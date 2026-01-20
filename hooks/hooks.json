@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PLUGIN_ROOT/hooks/check-stop-error.ps1\" 2>/dev/null || bash \"$CLAUDE_PLUGIN_ROOT/hooks/check-stop-error.sh\"",
+            "command": "python \"$CLAUDE_PLUGIN_ROOT/hooks/check_stop_error.py\"",
             "timeout": 5
           }
         ]
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat > /dev/null; powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.ps1\" question 2>/dev/null || bash \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.sh\" question",
+            "command": "python \"$CLAUDE_PLUGIN_ROOT/hooks/play_sound.py\" question",
             "timeout": 5
           }
         ]
@@ -31,7 +31,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat > /dev/null; powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.ps1\" permission 2>/dev/null || bash \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.sh\" permission",
+            "command": "python \"$CLAUDE_PLUGIN_ROOT/hooks/play_sound.py\" permission",
             "timeout": 5
           }
         ]

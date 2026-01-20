@@ -92,14 +92,16 @@ Craft your own legendary soundpack:
 
 ## System Requirements
 
+**Python 3** is required on all platforms.
+
 ### macOS
-The native `afplay` enchantment suffices. No additional artifacts required.
+The native `afplay` command is used. No additional artifacts required.
 
 ### Linux
 One of these audio conduits: `paplay` (PulseAudio), `aplay` (ALSA), `mpv`, or `ffplay`
 
 ### Windows
-PowerShell (built-in sorcery) or `mpv`
+Uses the built-in `winsound` Python module. No additional artifacts required.
 
 ---
 

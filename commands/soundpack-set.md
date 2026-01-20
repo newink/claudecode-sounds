@@ -43,5 +43,5 @@ Check `$CLAUDE_PLUGIN_ROOT/soundpacks/` for available options:
 
 Play a test sound to confirm:
 ```bash
-bash $CLAUDE_PLUGIN_ROOT/hooks/play-sound.sh complete
+python "$CLAUDE_PLUGIN_ROOT/hooks/play_sound.py" complete
 ```

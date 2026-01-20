@@ -117,7 +117,7 @@ Sound types and their purpose:
 
 4. Play a test sound to confirm:
    ```bash
-   bash $CLAUDE_PLUGIN_ROOT/hooks/play-sound.sh complete
+   python "$CLAUDE_PLUGIN_ROOT/hooks/play_sound.py" complete
    ```
 
 ## Validation Rules
@@ -129,7 +129,7 @@ Sound types and their purpose:
 ## Fallback Behavior
 
 Any skipped sounds will automatically use the warcraft3-en soundpack as fallback.
-This is handled by `play-sound.sh` - no additional configuration needed.
+This is handled by `play_sound.py` - no additional configuration needed.
 
 ## Example Session
 

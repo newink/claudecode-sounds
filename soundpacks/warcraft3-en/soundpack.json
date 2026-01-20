@@ -2,9 +2,9 @@
   "name": "Warcraft 3 (English)",
   "description": "Classic Warcraft 3 interface sounds",
   "sounds": {
-    "question": ["question-1.wav", "question-2.wav", "question-3.wav"],
-    "complete": ["complete-1.wav", "complete-2.wav", "complete-3.wav", "complete-4.wav"],
-    "error": ["error-1.wav", "error-2.wav", "error-3.wav", "error-4.wav"],
-    "permission": ["permission-1.wav", "permission-2.wav", "permission-3.wav"]
+    "question": ["question-1.wav", "question-2.wav", "question-3.wav", "question-4.wav", "question-5.wav", "question-6.wav", "question-7.wav", "question-8.wav", "question-9.wav", "question-10.wav", "question-11.wav", "question-12.wav"],
+    "complete": ["complete-1.wav", "complete-2.wav", "complete-3.wav", "complete-4.wav", "complete-5.wav", "complete-6.wav", "complete-7.wav", "complete-8.wav", "complete-9.wav", "complete-10.wav", "complete-11.wav", "complete-12.wav"],
+    "error": ["error-1.wav", "error-2.wav", "error-3.wav", "error-4.wav", "error-5.wav", "error-6.wav", "error-7.wav", "error-8.wav", "error-9.wav", "error-10.wav", "error-11.wav", "error-12.wav"],
+    "permission": ["permission-1.wav", "permission-2.wav", "permission-3.wav", "permission-4.wav", "permission-5.wav", "permission-6.wav", "permission-7.wav", "permission-8.wav", "permission-9.wav", "permission-10.wav", "permission-11.wav", "permission-12.wav"]
   }
 }

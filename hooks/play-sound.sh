@@ -130,7 +130,9 @@ case "$(uname -s)" in
     MINGW*|MSYS*|CYGWIN*)
         # Windows (Git Bash, MSYS2, Cygwin)
         if command -v powershell.exe &> /dev/null; then
-            powershell.exe -c "(New-Object Media.SoundPlayer '$SOUND_FILE').PlaySync()" &
+            # Convert Unix path to Windows path for PowerShell
+            WIN_SOUND_FILE=$(cygpath -w "$SOUND_FILE")
+            powershell.exe -c "(New-Object Media.SoundPlayer '$WIN_SOUND_FILE').PlaySync()" &
         elif command -v mpv &> /dev/null; then
             mpv --no-video --really-quiet "$SOUND_FILE" &
         fi

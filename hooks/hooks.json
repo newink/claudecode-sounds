@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat > /dev/null; powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.ps1\" complete 2>/dev/null || bash \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.sh\" complete",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PLUGIN_ROOT/hooks/check-stop-error.ps1\" 2>/dev/null || bash \"$CLAUDE_PLUGIN_ROOT/hooks/check-stop-error.sh\"",
             "timeout": 5
           }
         ]
@@ -32,6 +32,18 @@
           {
             "type": "command",
             "command": "cat > /dev/null; powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.ps1\" question 2>/dev/null || bash \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.sh\" question",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat > /dev/null; powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.ps1\" permission 2>/dev/null || bash \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.sh\" permission",
             "timeout": 5
           }
         ]

@@ -17,7 +17,13 @@ Show the current soundpack configuration and available soundpacks.
 3. Show current configuration:
    - Active soundpack (default: warcraft3-en)
    - Available soundpacks with descriptions
-4. Offer to test sounds by playing each one
+4. **Display sound details for active soundpack**:
+   - Read the active soundpack's `soundpack.json`
+   - For each sound type, show the count:
+     - Single sound (string in JSON): show as "1 sound"
+     - Multiple sounds (array in JSON): show as "N sounds (random)"
+     - Not configured: show as "fallback (warcraft3-en)"
+5. Offer to test sounds by playing each one
 
 ## Testing Sounds
 
@@ -39,9 +45,12 @@ Available soundpacks:
 - warcraft3-ru: Озвучка Warcraft 3 на русском языке
 - warcraft3-en: Classic Warcraft 3 interface sounds
 
-Sounds:
-- question: Plays when Claude asks a question
-- complete: Plays when task finishes
-- error: Plays on errors
-- permission: Plays when permission needed
+Sound Events:
+- question: 1 sound - Plays when Claude asks a question
+- complete: 3 sounds (random) - Plays when task finishes
+- error: 1 sound - Plays on errors
+- permission: fallback (warcraft3-en) - Plays when permission needed
 ```
+
+Note: When a soundpack has multiple sounds configured for an event (array format in soundpack.json),
+one is randomly selected each time the event occurs.

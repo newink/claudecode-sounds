@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/on-question.sh",
+            "command": "cat > /dev/null; powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.ps1\" question 2>/dev/null || bash \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.sh\" question",
             "timeout": 5
           }
         ]
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/on-complete.sh",
+            "command": "cat > /dev/null; powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.ps1\" complete 2>/dev/null || bash \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.sh\" complete",
             "timeout": 5
           }
         ]
@@ -31,7 +31,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/on-question.sh",
+            "command": "cat > /dev/null; powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.ps1\" question 2>/dev/null || bash \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.sh\" question",
             "timeout": 5
           }
         ]

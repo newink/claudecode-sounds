@@ -1,18 +1,6 @@
 {
   "description": "Play sounds when Claude needs user attention",
   "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "AskUserQuestion",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cat > /dev/null; powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.ps1\" question 2>/dev/null || bash \"$CLAUDE_PLUGIN_ROOT/hooks/play-sound.sh\" question",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
     "Stop": [
       {
         "matcher": "*",

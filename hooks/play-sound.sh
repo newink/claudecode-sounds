@@ -10,7 +10,7 @@ PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(dirname "$(dirname "$0")")}"
 SETTINGS_FILE="${CLAUDE_PROJECT_DIR:-.}/.claude/claudecode-sounds.local.md"
 
 # Default soundpack
-SOUNDPACK="warcraft3-ru"
+SOUNDPACK="warcraft3-en"
 
 # Read soundpack from settings if exists
 if [ -f "$SETTINGS_FILE" ]; then

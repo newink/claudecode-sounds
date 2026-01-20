@@ -1,5 +1,5 @@
 ---
-name: sounds
+name: claudecode-sounds:sounds
 description: Show sound notification status and test sounds
 allowed-tools:
   - Read
@@ -15,7 +15,7 @@ Show the current soundpack configuration and available soundpacks.
 1. Read the settings file at `.claude/claudecode-sounds.local.md` if it exists
 2. List available soundpacks from `$CLAUDE_PLUGIN_ROOT/soundpacks/`
 3. Show current configuration:
-   - Active soundpack (default: warcraft3-ru)
+   - Active soundpack (default: warcraft3-en)
    - Available soundpacks with descriptions
 4. Offer to test sounds by playing each one
 
@@ -33,7 +33,7 @@ Where `<sound_type>` is one of: question, complete, error, permission
 ```
 Sound Notifications Status
 ==========================
-Active soundpack: warcraft3-ru (Warcraft 3 Русский)
+Active soundpack: warcraft3-en (Warcraft 3 English)
 
 Available soundpacks:
 - warcraft3-ru: Озвучка Warcraft 3 на русском языке

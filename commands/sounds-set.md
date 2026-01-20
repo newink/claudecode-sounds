@@ -1,5 +1,5 @@
 ---
-name: sounds-set
+name: claudecode-sounds:sounds-set
 description: Change the active soundpack
 argument-hint: "<soundpack-name>"
 allowed-tools:
@@ -24,7 +24,7 @@ Create/update `.claude/claudecode-sounds.local.md`:
 
 ```markdown
 ---
-soundpack: warcraft3-ru
+soundpack: warcraft3-en
 ---
 
 # Claude Code Sounds Settings
@@ -35,8 +35,8 @@ Active soundpack for audio notifications.
 ## Available Soundpacks
 
 Check `$CLAUDE_PLUGIN_ROOT/soundpacks/` for available options:
-- `warcraft3-ru` - Warcraft 3 (Русский)
 - `warcraft3-en` - Warcraft 3 (English)
+- `warcraft3-ru` - Warcraft 3 (Русский)
 
 ## After Setting
 

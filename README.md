@@ -12,10 +12,22 @@ Play sounds when Claude Code needs your attention.
 ## Soundpacks
 
 Included soundpacks:
-- `warcraft3-ru` - Warcraft 3 (Русский) - default
-- `warcraft3-en` - Warcraft 3 (English)
+- `warcraft3-en` - Warcraft 3 (English) - default
+- `warcraft3-ru` - Warcraft 3 (Русский)
 
 ## Installation
+
+### From Marketplace (Recommended)
+
+```bash
+# Add the marketplace
+/plugin marketplace add newink/codingagents
+
+# Install the plugin
+/plugin install claudecode-sounds@codingagents
+```
+
+### Manual Installation
 
 ```bash
 # Clone or copy to your plugins directory
@@ -38,7 +50,7 @@ Settings are stored in `.claude/claudecode-sounds.local.md`:
 
 ```markdown
 ---
-soundpack: warcraft3-ru
+soundpack: warcraft3-en
 ---
 ```
 

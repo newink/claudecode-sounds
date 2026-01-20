@@ -34,10 +34,10 @@ def get_plugin_root():
 
 
 def get_soundpack():
-    """Read soundpack from settings file."""
-    project_dir = os.environ.get("CLAUDE_PROJECT_DIR", ".")
-    log(f"CLAUDE_PROJECT_DIR: {project_dir}")
-    settings_file = Path(project_dir) / ".claude" / "claudecode-sounds.local.md"
+    """Read soundpack from global settings file."""
+    config_dir = os.environ.get("CLAUDE_CONFIG_DIR") or str(Path.home() / ".claude")
+    log(f"CLAUDE_CONFIG_DIR: {config_dir}")
+    settings_file = Path(config_dir) / "claudecode-sounds.local.md"
     log(f"Settings file: {settings_file}, exists: {settings_file.exists()}")
 
     soundpack = "warcraft3-en"  # default

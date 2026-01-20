@@ -11,17 +11,17 @@ allowed-tools:
 
 # Set Active Soundpack
 
-Change which soundpack is used for notifications.
+Change which soundpack is used for notifications globally (applies to all projects).
 
 ## Instructions
 
 1. If no argument provided, list available soundpacks and ask user to choose
 2. Validate the soundpack exists in `$CLAUDE_PLUGIN_ROOT/soundpacks/`
-3. Create or update `.claude/claudecode-sounds.local.md` with the new setting
+3. Create or update the global settings file at `$CLAUDE_CONFIG_DIR/claudecode-sounds.local.md` (fallback to `~/.claude/` if not set)
 
 ## Settings File Format
 
-Create/update `.claude/claudecode-sounds.local.md`:
+Create/update `$CLAUDE_CONFIG_DIR/claudecode-sounds.local.md` (or `~/.claude/claudecode-sounds.local.md`):
 
 ```markdown
 ---
@@ -30,7 +30,7 @@ soundpack: warcraft3-en
 
 # Claude Code Sounds Settings
 
-Active soundpack for audio notifications.
+Global soundpack for audio notifications.
 ```
 
 ## Available Soundpacks

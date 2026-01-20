@@ -32,6 +32,8 @@ The spirits of Azeroth now herald your coding endeavors. When Claude Code requir
 /plugin install claudecode-sounds@codingagents
 ```
 
+**Important:** Restart Claude Code after installation for the sounds to take effect.
+
 ### Manual Summoning
 
 ```bash
@@ -43,6 +45,8 @@ Or bind it to your project stronghold:
 ```bash
 cp -r claudecode-sounds /your/project/.claude-plugin/
 ```
+
+**Important:** Restart Claude Code after installation for the sounds to take effect.
 
 ## Battle Commands
 

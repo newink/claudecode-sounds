@@ -2,9 +2,9 @@
   "name": "Warcraft 3 (Русский)",
   "description": "Озвучка Warcraft 3 на русском",
   "sounds": {
-    "question": ["question-1.wav", "question-2.wav", "question-3.wav", "question-4.wav"],
+    "question": ["question-1.wav", "question-2.wav", "question-3.wav", "question-4.wav", "question-5.wav"],
     "complete": ["complete-1.wav", "complete-2.wav", "complete-3.wav", "complete-4.wav"],
-    "error": ["error-1.wav", "error-2.wav", "error-3.wav", "error-4.wav"],
+    "error": ["error-1.wav", "error-3.wav", "error-4.wav"],
     "permission": ["permission-1.wav", "permission-2.wav", "permission-3.wav"]
   }
 }

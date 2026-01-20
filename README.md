@@ -48,9 +48,9 @@ cp -r claudecode-sounds /your/project/.claude-plugin/
 
 | Command | Effect |
 |---------|--------|
-| `/sounds` | Display current soundpack and test the war horns |
-| `/sounds-set <name>` | Switch soundpacks (e.g., `/sounds-set warcraft3-ru`) |
-| `/soundpack-create` | Forge a new custom soundpack |
+| `/claudecode-sounds:test-sounds` | Display current soundpack and test the war horns |
+| `/claudecode-sounds:soundpack-set <name>` | Switch soundpacks (e.g., `/claudecode-sounds:soundpack-set warcraft3-ru`) |
+| `/claudecode-sounds:soundpack-create` | Forge a new custom soundpack |
 
 ## Configuration Scroll
 

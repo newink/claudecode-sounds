@@ -11,100 +11,24 @@ allowed-tools:
 
 # Set Active Soundpack
 
-Change which soundpack is used for notifications globally (applies to all projects).
+Change which soundpack is used for notifications globally.
 
 ## Instructions
 
-1. If no argument provided, list available soundpacks and ask user to choose
-2. Locate the bundled wrapper script before running any plugin command:
-   - Check `$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh`
-   - Then `$PWD/.claude-plugin/scripts/run-cli.sh`
-   - Then `$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1`
-   - Then `$PWD/.claude-plugin/scripts/run-cli.ps1`
-   - Then search `${CLAUDE_CONFIG_DIR:-$HOME/.claude}` for `*/claudecode-sounds/scripts/run-cli.sh`
-   - Then search `${CLAUDE_CONFIG_DIR:-$HOME/.claude}` for `*/claudecode-sounds/scripts/run-cli.ps1`
-3. Validate the soundpack exists in the wrapper's `soundpack list` output
-4. Use `run_cli soundpack set "<soundpack-name>"` to update the global settings file at `$CLAUDE_CONFIG_DIR/claudecode-sounds.json` (fallback to `~/.claude/` if not set)
+Use a single Bash invocation per action. Do not rely on shell variables or functions carrying across separate Bash tool calls.
 
-Use this Bash snippet to resolve the runner and define `run_cli`:
+Use this self-contained invocation pattern, replacing only the final CLI arguments:
 
 ```bash
-PLUGIN_RUNNER_SH=""
-PLUGIN_RUNNER_PS1=""
-for candidate in \
-  "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh" \
-  "$PWD/.claude-plugin/scripts/run-cli.sh"
-do
-  if [ -f "$candidate" ]; then
-    PLUGIN_RUNNER_SH="$candidate"
-    break
-  fi
-done
-
-for candidate in \
-  "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1" \
-  "$PWD/.claude-plugin/scripts/run-cli.ps1"
-do
-  if [ -f "$candidate" ]; then
-    PLUGIN_RUNNER_PS1="$candidate"
-    break
-  fi
-done
-
-if [ -z "$PLUGIN_RUNNER_SH" ]; then
-  PLUGIN_RUNNER_SH="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.sh' -print -quit 2>/dev/null)"
-fi
-
-if [ -z "$PLUGIN_RUNNER_PS1" ]; then
-  PLUGIN_RUNNER_PS1="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.ps1' -print -quit 2>/dev/null)"
-fi
-
-run_cli() {
-  if [ -n "$PLUGIN_RUNNER_SH" ]; then
-    bash "$PLUGIN_RUNNER_SH" "$@"
-    return
-  fi
-
-  if [ -n "$PLUGIN_RUNNER_PS1" ]; then
-    if command -v pwsh >/dev/null 2>&1; then
-      pwsh -NoProfile -ExecutionPolicy Bypass -File "$PLUGIN_RUNNER_PS1" "$@"
-      return
-    fi
-    if command -v powershell.exe >/dev/null 2>&1; then
-      powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$PLUGIN_RUNNER_PS1" "$@"
-      return
-    fi
-    if command -v powershell >/dev/null 2>&1; then
-      powershell -NoProfile -ExecutionPolicy Bypass -File "$PLUGIN_RUNNER_PS1" "$@"
-      return
-    fi
-  fi
-
-  echo "Could not locate a usable claudecode-sounds runner. Ask the user to reinstall the plugin or restart Claude Code." >&2
-  exit 1
-}
+RUNNER_SH=""; RUNNER_PS1=""; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh" "$PWD/.claude-plugin/scripts/run-cli.sh"; do if [ -f "$candidate" ]; then RUNNER_SH="$candidate"; break; fi; done; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1" "$PWD/.claude-plugin/scripts/run-cli.ps1"; do if [ -f "$candidate" ]; then RUNNER_PS1="$candidate"; break; fi; done; if [ -z "$RUNNER_SH" ]; then RUNNER_SH="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.sh' -print -quit 2>/dev/null)"; fi; if [ -z "$RUNNER_PS1" ]; then RUNNER_PS1="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.ps1' -print -quit 2>/dev/null)"; fi; if [ -n "$RUNNER_SH" ]; then bash "$RUNNER_SH" soundpack list; elif [ -n "$RUNNER_PS1" ] && command -v pwsh >/dev/null 2>&1; then pwsh -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack list; elif [ -n "$RUNNER_PS1" ] && command -v powershell.exe >/dev/null 2>&1; then powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack list; elif [ -n "$RUNNER_PS1" ] && command -v powershell >/dev/null 2>&1; then powershell -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack list; else echo "Could not locate a usable claudecode-sounds runner. Ask the user to reinstall the plugin or restart Claude Code." >&2; exit 1; fi
 ```
 
-## Settings File Format
+1. If no argument is provided, run the list command above and ask the user to choose a soundpack name.
+2. Validate that the requested name exists in the `soundpack list` output.
+3. Set the soundpack with a separate Bash tool call:
 
-Create/update `$CLAUDE_CONFIG_DIR/claudecode-sounds.json` (or `~/.claude/claudecode-sounds.json`):
-
-```json
-{
-  "soundpack": "warcraft3-en"
-}
-```
-
-## Available Soundpacks
-
-List available soundpacks:
 ```bash
-run_cli soundpack list
+RUNNER_SH=""; RUNNER_PS1=""; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh" "$PWD/.claude-plugin/scripts/run-cli.sh"; do if [ -f "$candidate" ]; then RUNNER_SH="$candidate"; break; fi; done; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1" "$PWD/.claude-plugin/scripts/run-cli.ps1"; do if [ -f "$candidate" ]; then RUNNER_PS1="$candidate"; break; fi; done; if [ -z "$RUNNER_SH" ]; then RUNNER_SH="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.sh' -print -quit 2>/dev/null)"; fi; if [ -z "$RUNNER_PS1" ]; then RUNNER_PS1="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.ps1' -print -quit 2>/dev/null)"; fi; if [ -n "$RUNNER_SH" ]; then bash "$RUNNER_SH" soundpack set "<soundpack-name>"; elif [ -n "$RUNNER_PS1" ] && command -v pwsh >/dev/null 2>&1; then pwsh -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack set "<soundpack-name>"; elif [ -n "$RUNNER_PS1" ] && command -v powershell.exe >/dev/null 2>&1; then powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack set "<soundpack-name>"; elif [ -n "$RUNNER_PS1" ] && command -v powershell >/dev/null 2>&1; then powershell -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack set "<soundpack-name>"; else echo "Could not locate a usable claudecode-sounds runner. Ask the user to reinstall the plugin or restart Claude Code." >&2; exit 1; fi
 ```
 
-## After Setting
-
-Play a test sound to confirm:
-```bash
-run_cli soundpack set "<soundpack-name>"
-```
+4. Report the active soundpack name. Mention that setting it also plays the completion sound as confirmation.

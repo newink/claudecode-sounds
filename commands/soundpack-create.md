@@ -14,221 +14,35 @@ allowed-tools:
 
 Guide the user through creating a custom soundpack with their own WAV files.
 
-## Wizard Flow
+## Instructions
 
-### Step 1: Soundpack Directory Name
+Use a single Bash invocation per action. Do not rely on shell variables or functions carrying across separate Bash tool calls.
 
-Ask user for a directory name using AskUserQuestion:
-- Must be lowercase with hyphens only (e.g., `my-sounds`, `zelda-pack`)
-- Must not already exist in the plugin's `soundpacks/` directory
-- First locate the bundled wrapper script by checking:
-  - `$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh`
-  - `$PWD/.claude-plugin/scripts/run-cli.sh`
-  - `$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1`
-  - `$PWD/.claude-plugin/scripts/run-cli.ps1`
-  - `${CLAUDE_CONFIG_DIR:-$HOME/.claude}` for `*/claudecode-sounds/scripts/run-cli.sh`
-  - `${CLAUDE_CONFIG_DIR:-$HOME/.claude}` for `*/claudecode-sounds/scripts/run-cli.ps1`
-- Resolve the runner with:
-  ```bash
-  PLUGIN_RUNNER_SH=""
-  PLUGIN_RUNNER_PS1=""
-  for candidate in \
-    "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh" \
-    "$PWD/.claude-plugin/scripts/run-cli.sh"
-  do
-    if [ -f "$candidate" ]; then
-      PLUGIN_RUNNER_SH="$candidate"
-      break
-    fi
-  done
+Use this Bash command whenever you need the plugin root or to invoke the bundled CLI:
 
-  for candidate in \
-    "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1" \
-    "$PWD/.claude-plugin/scripts/run-cli.ps1"
-  do
-    if [ -f "$candidate" ]; then
-      PLUGIN_RUNNER_PS1="$candidate"
-      break
-    fi
-  done
-
-  if [ -z "$PLUGIN_RUNNER_SH" ]; then
-    PLUGIN_RUNNER_SH="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.sh' -print -quit 2>/dev/null)"
-  fi
-
-  if [ -z "$PLUGIN_RUNNER_PS1" ]; then
-    PLUGIN_RUNNER_PS1="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.ps1' -print -quit 2>/dev/null)"
-  fi
-
-  run_cli() {
-    if [ -n "$PLUGIN_RUNNER_SH" ]; then
-      bash "$PLUGIN_RUNNER_SH" "$@"
-      return
-    fi
-
-    if [ -n "$PLUGIN_RUNNER_PS1" ]; then
-      if command -v pwsh >/dev/null 2>&1; then
-        pwsh -NoProfile -ExecutionPolicy Bypass -File "$PLUGIN_RUNNER_PS1" "$@"
-        return
-      fi
-      if command -v powershell.exe >/dev/null 2>&1; then
-        powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$PLUGIN_RUNNER_PS1" "$@"
-        return
-      fi
-      if command -v powershell >/dev/null 2>&1; then
-        powershell -NoProfile -ExecutionPolicy Bypass -File "$PLUGIN_RUNNER_PS1" "$@"
-        return
-      fi
-    fi
-
-    echo "Could not locate a usable claudecode-sounds runner. Ask the user to reinstall the plugin or restart Claude Code." >&2
-    exit 1
-  }
-  ```
-- Validate with: `run_cli soundpack list` to check existing packs
-
-### Step 2: Display Name
-
-Ask user for a human-readable display name (e.g., "My Custom Sounds", "Legend of Zelda")
-
-### Step 3: Description
-
-Ask user for a brief description of the soundpack.
-
-### Step 4: Sound Files
-
-For each sound type (question, complete, error, permission), ask for the file path(s):
-- Use AskUserQuestion with open text input
-- Clearly state that skipping is allowed (empty = skip, will use fallback from warcraft3-en)
-- **Multiple sounds supported**: User can provide comma-separated paths for random playback
-  - Example: `/path/to/sound1.wav, /path/to/sound2.wav, /path/to/sound3.wav`
-- If path(s) provided:
-  - Split by comma and trim whitespace
-  - Validate each file exists using `ls` or `test -f`
-  - Validate each ends with `.wav` (case-insensitive)
-  - If any invalid, ask again with error message listing which files failed
-
-Sound types and their purpose:
-- `question` - Plays when Claude asks a question (AskUserQuestion)
-- `complete` - Plays when a task completes
-- `error` - Plays when an error occurs
-- `permission` - Plays when permission is needed
-
-### Step 5: Create Soundpack
-
-1. Create directory:
-   ```bash
-   if [ -n "$PLUGIN_RUNNER_SH" ]; then
-     PLUGIN_ROOT="$(cd "$(dirname "$PLUGIN_RUNNER_SH")/.." && pwd)"
-   else
-     PLUGIN_ROOT="$(cd "$(dirname "$PLUGIN_RUNNER_PS1")/.." && pwd)"
-   fi
-   mkdir -p "$PLUGIN_ROOT/soundpacks/{name}"
-   ```
-
-2. Copy each provided WAV file:
-   - **Single file**: Copy as `{sound-type}.wav`
-     ```bash
-     cp "{user-provided-path}" "$PLUGIN_ROOT/soundpacks/{name}/{sound-type}.wav"
-     ```
-   - **Multiple files**: Copy as `{sound-type}-1.wav`, `{sound-type}-2.wav`, etc.
-     ```bash
-     cp "{first-path}" "$PLUGIN_ROOT/soundpacks/{name}/{sound-type}-1.wav"
-     cp "{second-path}" "$PLUGIN_ROOT/soundpacks/{name}/{sound-type}-2.wav"
-     # ... continue for all files
-     ```
-
-3. Create `soundpack.json` with Write tool - only include sounds that were provided:
-   - **Single file format** (string):
-     ```json
-     {
-       "name": "Display Name Here",
-       "description": "Description here",
-       "sounds": {
-         "question": "question.wav",
-         "complete": "complete.wav"
-       }
-     }
-     ```
-   - **Multiple files format** (array for random selection):
-     ```json
-     {
-       "name": "Display Name Here",
-       "description": "Description here",
-       "sounds": {
-         "question": ["question-1.wav", "question-2.wav", "question-3.wav"],
-         "complete": "complete.wav"
-       }
-     }
-     ```
-   Note: Only add entries to "sounds" for files that were actually provided.
-   Use string format for single files, array format for multiple files.
-
-### Step 6: Confirmation & Activation
-
-1. Show summary of what was created:
-   - Soundpack location
-   - Which sounds were added (with count if multiple, e.g., "3 sounds (random)")
-   - Which sounds will fallback to warcraft3-en
-
-2. Ask if user wants to activate the new soundpack now
-
-3. If yes, update `.claude/claudecode-sounds.json`:
-   ```json
-   {
-     "soundpack": "{name}"
-   }
-   ```
-
-4. Play a test sound to confirm:
-   ```bash
-   run_cli soundpack set "{name}"
-   ```
-
-## Validation Rules
-
-- Directory name: `/^[a-z0-9-]+$/` (lowercase alphanumeric and hyphens)
-- File paths: Must exist and end with `.wav` (case-insensitive check)
-- At least one sound should be provided (warn if all skipped, but allow it)
-
-## Fallback Behavior
-
-Any skipped sounds will automatically use the warcraft3-en soundpack as fallback.
-This is handled by `cli.py` / `cli.mjs` - no additional configuration needed.
-
-## Example Session
-
+```bash
+RUNNER_SH=""; RUNNER_PS1=""; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh" "$PWD/.claude-plugin/scripts/run-cli.sh"; do if [ -f "$candidate" ]; then RUNNER_SH="$candidate"; break; fi; done; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1" "$PWD/.claude-plugin/scripts/run-cli.ps1"; do if [ -f "$candidate" ]; then RUNNER_PS1="$candidate"; break; fi; done; if [ -z "$RUNNER_SH" ]; then RUNNER_SH="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.sh' -print -quit 2>/dev/null)"; fi; if [ -z "$RUNNER_PS1" ]; then RUNNER_PS1="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.ps1' -print -quit 2>/dev/null)"; fi; if [ -n "$RUNNER_SH" ]; then PLUGIN_ROOT="$(cd "$(dirname "$RUNNER_SH")/.." && pwd)"; bash "$RUNNER_SH" soundpack list; elif [ -n "$RUNNER_PS1" ]; then PLUGIN_ROOT="$(cd "$(dirname "$RUNNER_PS1")/.." && pwd)"; if command -v pwsh >/dev/null 2>&1; then pwsh -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack list; elif command -v powershell.exe >/dev/null 2>&1; then powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack list; elif command -v powershell >/dev/null 2>&1; then powershell -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack list; else echo "Could not execute PowerShell runner." >&2; exit 1; fi; else echo "Could not locate a usable claudecode-sounds runner. Ask the user to reinstall the plugin or restart Claude Code." >&2; exit 1; fi
 ```
-Claude: "What name for your soundpack directory? (lowercase, hyphens allowed)"
-User: "zelda-sounds"
 
-Claude: "What display name? (shown in /sounds)"
-User: "Legend of Zelda"
+1. Ask for a directory name:
+   - lowercase letters, numbers, and hyphens only
+   - must not already exist in `soundpacks/`
+2. Validate it does not already exist by reading the `soundpack list` output from the command above.
+3. Ask for:
+   - display name
+   - description
+   - WAV paths for `question`, `complete`, `error`, and `permission`
+4. Empty input means fallback to `warcraft3-en`.
+5. Multiple WAV files may be provided as a comma-separated list for random playback.
+6. Validate each provided path exists and ends with `.wav`.
+7. Create the soundpack directory under the resolved plugin root.
+8. Copy files into `soundpacks/<name>/`:
+   - single file: `<type>.wav`
+   - multiple files: `<type>-1.wav`, `<type>-2.wav`, and so on
+9. Write `soundpack.json` with `name`, `description`, and `sounds`.
+10. If the user wants to activate it immediately, run a separate Bash tool call using the same runner-resolution pattern and invoke `soundpack set "<soundpack-name>"`.
 
-Claude: "Brief description?"
-User: "Sounds from Ocarina of Time"
+## Notes
 
-Claude: "Path to question.wav? (skip = use default, comma-separate for multiple)"
-User: "/Users/me/Downloads/hey-listen.wav, /Users/me/Downloads/navi.wav"
-
-Claude: "Path to complete.wav? (skip = use default, comma-separate for multiple)"
-User: "" [skips]
-
-Claude: "Path to error.wav? (skip = use default, comma-separate for multiple)"
-User: "/Users/me/Downloads/game-over.wav"
-
-Claude: "Path to permission.wav? (skip = use default, comma-separate for multiple)"
-User: "" [skips]
-
-Claude: "Created soundpack 'zelda-sounds' with custom sounds.
-        - question: 2 sounds (random)
-        - complete: fallback (warcraft3-en)
-        - error: 1 sound
-        - permission: fallback (warcraft3-en)
-
-        Activate it now?"
-User: "Yes"
-
-Claude: [Updates settings, plays test sound]
-        "Done! Your new soundpack is active."
-```
+- Any skipped sounds fall back to `warcraft3-en`.
+- Activation also plays the completion sound.

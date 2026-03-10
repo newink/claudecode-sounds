@@ -58,12 +58,12 @@ cp -r claudecode-sounds /your/project/.claude-plugin/
 
 ## Configuration Scroll
 
-Your settings are inscribed in `.claude/claudecode-sounds.local.md`:
+Your settings are inscribed in `.claude/claudecode-sounds.json`:
 
-```markdown
----
-soundpack: warcraft3-en
----
+```json
+{
+  "soundpack": "warcraft3-en"
+}
 ```
 
 ## Forging Custom Soundpacks
@@ -92,7 +92,9 @@ Craft your own legendary soundpack:
 
 ## System Requirements
 
-**Python 3** is required on all platforms.
+**Node.js 14+** or **Python 3** is required (at least one). The plugin tries Node.js first, then falls back to Python automatically.
+
+> If using the Claude Code native installer without Node.js or Python, install one for sound support.
 
 ### macOS
 The native `afplay` command is used. No additional artifacts required.
@@ -101,7 +103,7 @@ The native `afplay` command is used. No additional artifacts required.
 One of these audio conduits: `paplay` (PulseAudio), `aplay` (ALSA), `mpv`, or `ffplay`
 
 ### Windows
-Uses the built-in `winsound` Python module. No additional artifacts required.
+Uses PowerShell audio (Node.js) or the built-in `winsound` Python module. No additional artifacts required.
 
 ---
 

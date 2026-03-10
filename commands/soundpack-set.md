@@ -17,31 +17,28 @@ Change which soundpack is used for notifications globally (applies to all projec
 
 1. If no argument provided, list available soundpacks and ask user to choose
 2. Validate the soundpack exists in `$CLAUDE_PLUGIN_ROOT/soundpacks/`
-3. Create or update the global settings file at `$CLAUDE_CONFIG_DIR/claudecode-sounds.local.md` (fallback to `~/.claude/` if not set)
+3. Create or update the global settings file at `$CLAUDE_CONFIG_DIR/claudecode-sounds.json` (fallback to `~/.claude/` if not set)
 
 ## Settings File Format
 
-Create/update `$CLAUDE_CONFIG_DIR/claudecode-sounds.local.md` (or `~/.claude/claudecode-sounds.local.md`):
+Create/update `$CLAUDE_CONFIG_DIR/claudecode-sounds.json` (or `~/.claude/claudecode-sounds.json`):
 
-```markdown
----
-soundpack: warcraft3-en
----
-
-# Claude Code Sounds Settings
-
-Global soundpack for audio notifications.
+```json
+{
+  "soundpack": "warcraft3-en"
+}
 ```
 
 ## Available Soundpacks
 
-Check `$CLAUDE_PLUGIN_ROOT/soundpacks/` for available options:
-- `warcraft3-en` - Warcraft 3 (English)
-- `warcraft3-ru` - Warcraft 3 (Русский)
+List available soundpacks:
+```bash
+node "$CLAUDE_PLUGIN_ROOT/hooks/cli.mjs" soundpack list || python3 "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" soundpack list || python "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" soundpack list || py -3 "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" soundpack list
+```
 
 ## After Setting
 
 Play a test sound to confirm:
 ```bash
-python "$CLAUDE_PLUGIN_ROOT/hooks/play_sound.py" complete
+node "$CLAUDE_PLUGIN_ROOT/hooks/cli.mjs" play complete || python3 "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" play complete || python "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" play complete || py -3 "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" play complete
 ```

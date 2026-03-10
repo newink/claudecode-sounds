@@ -21,7 +21,7 @@ Guide the user through creating a custom soundpack with their own WAV files.
 Ask user for a directory name using AskUserQuestion:
 - Must be lowercase with hyphens only (e.g., `my-sounds`, `zelda-pack`)
 - Must not already exist in `$CLAUDE_PLUGIN_ROOT/soundpacks/`
-- Validate with: `ls $CLAUDE_PLUGIN_ROOT/soundpacks/` to check existing packs
+- Validate with: `node "$CLAUDE_PLUGIN_ROOT/hooks/cli.mjs" soundpack list || python3 "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" soundpack list || python "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" soundpack list || py -3 "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" soundpack list` to check existing packs
 
 ### Step 2: Display Name
 
@@ -104,20 +104,16 @@ Sound types and their purpose:
 
 2. Ask if user wants to activate the new soundpack now
 
-3. If yes, update `.claude/claudecode-sounds.local.md`:
-   ```markdown
-   ---
-   soundpack: {name}
-   ---
-
-   # Claude Code Sounds Settings
-
-   Active soundpack for audio notifications.
+3. If yes, update `.claude/claudecode-sounds.json`:
+   ```json
+   {
+     "soundpack": "{name}"
+   }
    ```
 
 4. Play a test sound to confirm:
    ```bash
-   python "$CLAUDE_PLUGIN_ROOT/hooks/play_sound.py" complete
+   node "$CLAUDE_PLUGIN_ROOT/hooks/cli.mjs" play complete || python3 "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" play complete || python "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" play complete || py -3 "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" play complete
    ```
 
 ## Validation Rules
@@ -129,7 +125,7 @@ Sound types and their purpose:
 ## Fallback Behavior
 
 Any skipped sounds will automatically use the warcraft3-en soundpack as fallback.
-This is handled by `play_sound.py` - no additional configuration needed.
+This is handled by `cli.py` / `cli.mjs` - no additional configuration needed.
 
 ## Example Session
 

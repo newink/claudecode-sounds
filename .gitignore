@@ -1,6 +1,7 @@
 *.rar
 *.zip
 .DS_Store
-.claude/*.local.md
+.claude/*.json
 var
+__pycache__/
 

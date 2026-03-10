@@ -108,10 +108,15 @@ def play_sound_async(sound_file: Path):
 
     try:
         if system == "Windows":
-            import winsound
-            log("Using winsound")
-            winsound.PlaySound(str(sound_file), winsound.SND_FILENAME | winsound.SND_ASYNC)
-            log("winsound.PlaySound called")
+            log("Using winsound via detached process")
+            subprocess.Popen(
+                [sys.executable, "-c",
+                 f"import winsound; winsound.PlaySound(r'{sound_file}', winsound.SND_FILENAME)"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NO_WINDOW,
+            )
+            log("Detached winsound process started")
         elif system == "Darwin":
             log("Using afplay")
             proc = subprocess.Popen(

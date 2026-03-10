@@ -13,22 +13,62 @@ Test sounds by running the plugin playback commands directly.
 
 ## Instructions
 
-Use a single Bash invocation per action. Do not rely on shell variables or functions carrying across separate Bash tool calls.
+Use a single Bash tool call for the full test sequence.
 
-Use this self-contained pattern, replacing the final arguments after the runner is resolved:
+First resolve the bootstrap runner:
 
 ```bash
-RUNNER_SH=""; RUNNER_PS1=""; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh" "$PWD/.claude-plugin/scripts/run-cli.sh"; do if [ -f "$candidate" ]; then RUNNER_SH="$candidate"; break; fi; done; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1" "$PWD/.claude-plugin/scripts/run-cli.ps1"; do if [ -f "$candidate" ]; then RUNNER_PS1="$candidate"; break; fi; done; if [ -z "$RUNNER_SH" ]; then RUNNER_SH="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.sh' -print -quit 2>/dev/null)"; fi; if [ -z "$RUNNER_PS1" ]; then RUNNER_PS1="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.ps1' -print -quit 2>/dev/null)"; fi; if [ -n "$RUNNER_SH" ]; then bash "$RUNNER_SH" soundpack get; elif [ -n "$RUNNER_PS1" ] && command -v pwsh >/dev/null 2>&1; then pwsh -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack get; elif [ -n "$RUNNER_PS1" ] && command -v powershell.exe >/dev/null 2>&1; then powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack get; elif [ -n "$RUNNER_PS1" ] && command -v powershell >/dev/null 2>&1; then powershell -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack get; else echo "Could not locate a usable claudecode-sounds runner. Ask the user to reinstall the plugin or restart Claude Code." >&2; exit 1; fi
+BOOTSTRAP=""
+for candidate in \
+  "$PWD/scripts/bootstrap-run.sh" \
+  "$PWD/.claude-plugin/claudecode-sounds/scripts/bootstrap-run.sh" \
+  "$PWD/.claude-plugin/scripts/bootstrap-run.sh"
+do
+  if [ -f "$candidate" ]; then
+    BOOTSTRAP="$candidate"
+    break
+  fi
+done
+
+if [ -z "$BOOTSTRAP" ]; then
+  BOOTSTRAP="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds*/scripts/bootstrap-run.sh' -print -quit 2>/dev/null)"
+fi
+
+if [ -z "$BOOTSTRAP" ]; then
+  echo "Could not locate claudecode-sounds bootstrap runner. Ask the user to reinstall the plugin or restart Claude Code." >&2
+  exit 1
+fi
 ```
 
-Run these five commands as separate Bash tool calls:
+Then run the full test sequence in one Bash call:
 
 ```bash
-RUNNER_SH=""; RUNNER_PS1=""; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh" "$PWD/.claude-plugin/scripts/run-cli.sh"; do if [ -f "$candidate" ]; then RUNNER_SH="$candidate"; break; fi; done; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1" "$PWD/.claude-plugin/scripts/run-cli.ps1"; do if [ -f "$candidate" ]; then RUNNER_PS1="$candidate"; break; fi; done; if [ -z "$RUNNER_SH" ]; then RUNNER_SH="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.sh' -print -quit 2>/dev/null)"; fi; if [ -z "$RUNNER_PS1" ]; then RUNNER_PS1="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.ps1' -print -quit 2>/dev/null)"; fi; if [ -n "$RUNNER_SH" ]; then bash "$RUNNER_SH" soundpack get; elif [ -n "$RUNNER_PS1" ] && command -v pwsh >/dev/null 2>&1; then pwsh -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack get; elif [ -n "$RUNNER_PS1" ] && command -v powershell.exe >/dev/null 2>&1; then powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack get; elif [ -n "$RUNNER_PS1" ] && command -v powershell >/dev/null 2>&1; then powershell -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" soundpack get; else echo "Could not locate a usable claudecode-sounds runner. Ask the user to reinstall the plugin or restart Claude Code." >&2; exit 1; fi
-RUNNER_SH=""; RUNNER_PS1=""; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh" "$PWD/.claude-plugin/scripts/run-cli.sh"; do if [ -f "$candidate" ]; then RUNNER_SH="$candidate"; break; fi; done; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1" "$PWD/.claude-plugin/scripts/run-cli.ps1"; do if [ -f "$candidate" ]; then RUNNER_PS1="$candidate"; break; fi; done; if [ -z "$RUNNER_SH" ]; then RUNNER_SH="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.sh' -print -quit 2>/dev/null)"; fi; if [ -z "$RUNNER_PS1" ]; then RUNNER_PS1="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.ps1' -print -quit 2>/dev/null)"; fi; if [ -n "$RUNNER_SH" ]; then bash "$RUNNER_SH" play question; elif [ -n "$RUNNER_PS1" ] && command -v pwsh >/dev/null 2>&1; then pwsh -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" play question; elif [ -n "$RUNNER_PS1" ] && command -v powershell.exe >/dev/null 2>&1; then powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" play question; elif [ -n "$RUNNER_PS1" ] && command -v powershell >/dev/null 2>&1; then powershell -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" play question; else echo "Could not locate a usable claudecode-sounds runner. Ask the user to reinstall the plugin or restart Claude Code." >&2; exit 1; fi
-RUNNER_SH=""; RUNNER_PS1=""; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh" "$PWD/.claude-plugin/scripts/run-cli.sh"; do if [ -f "$candidate" ]; then RUNNER_SH="$candidate"; break; fi; done; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1" "$PWD/.claude-plugin/scripts/run-cli.ps1"; do if [ -f "$candidate" ]; then RUNNER_PS1="$candidate"; break; fi; done; if [ -z "$RUNNER_SH" ]; then RUNNER_SH="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.sh' -print -quit 2>/dev/null)"; fi; if [ -z "$RUNNER_PS1" ]; then RUNNER_PS1="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.ps1' -print -quit 2>/dev/null)"; fi; if [ -n "$RUNNER_SH" ]; then bash "$RUNNER_SH" play permission; elif [ -n "$RUNNER_PS1" ] && command -v pwsh >/dev/null 2>&1; then pwsh -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" play permission; elif [ -n "$RUNNER_PS1" ] && command -v powershell.exe >/dev/null 2>&1; then powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" play permission; elif [ -n "$RUNNER_PS1" ] && command -v powershell >/dev/null 2>&1; then powershell -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" play permission; else echo "Could not locate a usable claudecode-sounds runner. Ask the user to reinstall the plugin or restart Claude Code." >&2; exit 1; fi
-RUNNER_SH=""; RUNNER_PS1=""; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh" "$PWD/.claude-plugin/scripts/run-cli.sh"; do if [ -f "$candidate" ]; then RUNNER_SH="$candidate"; break; fi; done; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1" "$PWD/.claude-plugin/scripts/run-cli.ps1"; do if [ -f "$candidate" ]; then RUNNER_PS1="$candidate"; break; fi; done; if [ -z "$RUNNER_SH" ]; then RUNNER_SH="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.sh' -print -quit 2>/dev/null)"; fi; if [ -z "$RUNNER_PS1" ]; then RUNNER_PS1="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.ps1' -print -quit 2>/dev/null)"; fi; if [ -n "$RUNNER_SH" ]; then bash "$RUNNER_SH" play complete; elif [ -n "$RUNNER_PS1" ] && command -v pwsh >/dev/null 2>&1; then pwsh -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" play complete; elif [ -n "$RUNNER_PS1" ] && command -v powershell.exe >/dev/null 2>&1; then powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" play complete; elif [ -n "$RUNNER_PS1" ] && command -v powershell >/dev/null 2>&1; then powershell -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" play complete; else echo "Could not locate a usable claudecode-sounds runner. Ask the user to reinstall the plugin or restart Claude Code." >&2; exit 1; fi
-RUNNER_SH=""; RUNNER_PS1=""; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh" "$PWD/.claude-plugin/scripts/run-cli.sh"; do if [ -f "$candidate" ]; then RUNNER_SH="$candidate"; break; fi; done; for candidate in "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1" "$PWD/.claude-plugin/scripts/run-cli.ps1"; do if [ -f "$candidate" ]; then RUNNER_PS1="$candidate"; break; fi; done; if [ -z "$RUNNER_SH" ]; then RUNNER_SH="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.sh' -print -quit 2>/dev/null)"; fi; if [ -z "$RUNNER_PS1" ]; then RUNNER_PS1="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.ps1' -print -quit 2>/dev/null)"; fi; if [ -n "$RUNNER_SH" ]; then bash "$RUNNER_SH" play error; elif [ -n "$RUNNER_PS1" ] && command -v pwsh >/dev/null 2>&1; then pwsh -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" play error; elif [ -n "$RUNNER_PS1" ] && command -v powershell.exe >/dev/null 2>&1; then powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" play error; elif [ -n "$RUNNER_PS1" ] && command -v powershell >/dev/null 2>&1; then powershell -NoProfile -ExecutionPolicy Bypass -File "$RUNNER_PS1" play error; else echo "Could not locate a usable claudecode-sounds runner. Ask the user to reinstall the plugin or restart Claude Code." >&2; exit 1; fi
+BOOTSTRAP=""
+for candidate in \
+  "$PWD/scripts/bootstrap-run.sh" \
+  "$PWD/.claude-plugin/claudecode-sounds/scripts/bootstrap-run.sh" \
+  "$PWD/.claude-plugin/scripts/bootstrap-run.sh"
+do
+  if [ -f "$candidate" ]; then
+    BOOTSTRAP="$candidate"
+    break
+  fi
+done
+
+if [ -z "$BOOTSTRAP" ]; then
+  BOOTSTRAP="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds*/scripts/bootstrap-run.sh' -print -quit 2>/dev/null)"
+fi
+
+if [ -z "$BOOTSTRAP" ]; then
+  echo "Could not locate claudecode-sounds bootstrap runner. Ask the user to reinstall the plugin or restart Claude Code." >&2
+  exit 1
+fi
+
+bash "$BOOTSTRAP" soundpack get
+bash "$BOOTSTRAP" play question
+bash "$BOOTSTRAP" play permission
+bash "$BOOTSTRAP" play complete
+bash "$BOOTSTRAP" play error
 ```
 
 Then ask the user which sounds they heard and whether any were missing or incorrect.

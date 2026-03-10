@@ -149,14 +149,20 @@ export function getSoundFile(packDir, soundType) {
   return null;
 }
 
-function startDetachedProcess(command, args, options = {}) {
+function startProcess(command, args, options = {}) {
   return new Promise((resolve, reject) => {
+    const {
+      waitForExit = false,
+      detached = true,
+      ...spawnOptions
+    } = options;
+
     let proc;
     try {
       proc = spawn(command, args, {
-        detached: true,
+        detached,
         stdio: 'ignore',
-        ...options,
+        ...spawnOptions,
       });
     } catch (e) {
       if (e.code === 'ENOENT') {
@@ -175,9 +181,14 @@ function startDetachedProcess(command, args, options = {}) {
     };
 
     proc.once('spawn', () => {
-      proc.unref();
       log(`${command} started with PID: ${proc.pid}`);
-      settle(resolve, true);
+
+      if (!waitForExit) {
+        if (detached) {
+          proc.unref();
+        }
+        settle(resolve, true);
+      }
     });
 
     proc.once('error', (e) => {
@@ -188,6 +199,13 @@ function startDetachedProcess(command, args, options = {}) {
       }
       settle(reject, e);
     });
+
+    if (waitForExit) {
+      proc.once('exit', (code, signal) => {
+        log(`${command} exited with code=${code} signal=${signal || 'none'}`);
+        settle(resolve, code === 0);
+      });
+    }
   });
 }
 
@@ -198,16 +216,28 @@ export async function playSoundAsync(soundFile) {
   try {
     if (os === 'win32') {
       const escaped = soundFile.replace(/'/g, "''");
-      const started = await startDetachedProcess('powershell', [
-        '-NoProfile', '-Command',
-        `(New-Object Media.SoundPlayer '${escaped}').PlaySync()`
-      ], { windowsHide: true });
+      const commands = [
+        ['powershell.exe', '-NoProfile', '-Command', `(New-Object Media.SoundPlayer '${escaped}').PlaySync()`],
+        ['pwsh', '-NoProfile', '-Command', `(New-Object Media.SoundPlayer '${escaped}').PlaySync()`],
+        ['powershell', '-NoProfile', '-Command', `(New-Object Media.SoundPlayer '${escaped}').PlaySync()`],
+      ];
+      let started = false;
+      for (const command of commands) {
+        started = await startProcess(command[0], command.slice(1), {
+          detached: false,
+          waitForExit: true,
+          windowsHide: true,
+        });
+        if (started) {
+          break;
+        }
+      }
       if (!started) {
-        log('PowerShell not found');
+        log('No usable PowerShell runtime found');
       }
     } else if (os === 'darwin') {
       log('Using afplay');
-      const started = await startDetachedProcess('afplay', [soundFile]);
+      const started = await startProcess('afplay', [soundFile]);
       if (!started) {
         log('afplay not found');
       }
@@ -223,7 +253,7 @@ export async function playSoundAsync(soundFile) {
       for (const cmd of players) {
         try {
           log(`Trying: ${cmd[0]}`);
-          found = await startDetachedProcess(cmd[0], cmd.slice(1));
+          found = await startProcess(cmd[0], cmd.slice(1));
           if (found) {
             break;
           }

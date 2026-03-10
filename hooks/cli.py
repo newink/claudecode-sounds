@@ -143,7 +143,7 @@ def get_sound_file(pack_dir: Path, sound_type: str):
 
 
 def play_sound_async(sound_file: Path):
-    """Play sound without blocking, based on OS."""
+    """Play sound based on OS. Windows playback is synchronous for reliability."""
     system = platform.system()
     log(f"Playing sound on {system}: {sound_file}")
 
@@ -151,7 +151,7 @@ def play_sound_async(sound_file: Path):
         if system == "Windows":
             import winsound
             log("Using winsound")
-            winsound.PlaySound(str(sound_file), winsound.SND_FILENAME | winsound.SND_ASYNC)
+            winsound.PlaySound(str(sound_file), winsound.SND_FILENAME)
             log("winsound.PlaySound called")
         elif system == "Darwin":
             log("Using afplay")

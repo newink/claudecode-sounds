@@ -92,7 +92,7 @@ Craft your own legendary soundpack:
 
 ## System Requirements
 
-**Node.js 14+** or **Python 3** is required (at least one). The plugin tries Node.js first, then falls back to Python automatically.
+Claude Code’s **npm installation** currently requires **Node.js 18+**. Claude Code also has native installer paths that do not rely on npm. This plugin can play sounds through **Node.js** or **Python 3**, and it tries Node.js first, then falls back to Python automatically.
 
 > If using the Claude Code native installer without Node.js or Python, install one for sound support.
 
@@ -103,7 +103,12 @@ The native `afplay` command is used. No additional artifacts required.
 One of these audio conduits: `paplay` (PulseAudio), `aplay` (ALSA), `mpv`, or `ffplay`
 
 ### Windows
-Uses PowerShell audio (Node.js) or the built-in `winsound` Python module. No additional artifacts required.
+Claude Code supports Windows through **WSL** and native Windows install paths. Bash-based Claude Code workflows on Windows use **Git Bash**. This plugin includes both:
+
+- `scripts/run-cli.sh` for Bash-based environments such as macOS, Linux, WSL, and native Windows with Git Bash
+- `scripts/run-cli.ps1` for native PowerShell usage
+
+Audio playback uses PowerShell audio on the Node.js path or the built-in `winsound` module on the Python path.
 
 ---
 

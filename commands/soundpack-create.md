@@ -20,8 +20,72 @@ Guide the user through creating a custom soundpack with their own WAV files.
 
 Ask user for a directory name using AskUserQuestion:
 - Must be lowercase with hyphens only (e.g., `my-sounds`, `zelda-pack`)
-- Must not already exist in `$CLAUDE_PLUGIN_ROOT/soundpacks/`
-- Validate with: `node "$CLAUDE_PLUGIN_ROOT/hooks/cli.mjs" soundpack list || python3 "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" soundpack list || python "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" soundpack list || py -3 "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" soundpack list` to check existing packs
+- Must not already exist in the plugin's `soundpacks/` directory
+- First locate the bundled wrapper script by checking:
+  - `$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh`
+  - `$PWD/.claude-plugin/scripts/run-cli.sh`
+  - `$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1`
+  - `$PWD/.claude-plugin/scripts/run-cli.ps1`
+  - `${CLAUDE_CONFIG_DIR:-$HOME/.claude}` for `*/claudecode-sounds/scripts/run-cli.sh`
+  - `${CLAUDE_CONFIG_DIR:-$HOME/.claude}` for `*/claudecode-sounds/scripts/run-cli.ps1`
+- Resolve the runner with:
+  ```bash
+  PLUGIN_RUNNER_SH=""
+  PLUGIN_RUNNER_PS1=""
+  for candidate in \
+    "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.sh" \
+    "$PWD/.claude-plugin/scripts/run-cli.sh"
+  do
+    if [ -f "$candidate" ]; then
+      PLUGIN_RUNNER_SH="$candidate"
+      break
+    fi
+  done
+
+  for candidate in \
+    "$PWD/.claude-plugin/claudecode-sounds/scripts/run-cli.ps1" \
+    "$PWD/.claude-plugin/scripts/run-cli.ps1"
+  do
+    if [ -f "$candidate" ]; then
+      PLUGIN_RUNNER_PS1="$candidate"
+      break
+    fi
+  done
+
+  if [ -z "$PLUGIN_RUNNER_SH" ]; then
+    PLUGIN_RUNNER_SH="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.sh' -print -quit 2>/dev/null)"
+  fi
+
+  if [ -z "$PLUGIN_RUNNER_PS1" ]; then
+    PLUGIN_RUNNER_PS1="$(find "${CLAUDE_CONFIG_DIR:-$HOME/.claude}" -path '*claudecode-sounds/scripts/run-cli.ps1' -print -quit 2>/dev/null)"
+  fi
+
+  run_cli() {
+    if [ -n "$PLUGIN_RUNNER_SH" ]; then
+      bash "$PLUGIN_RUNNER_SH" "$@"
+      return
+    fi
+
+    if [ -n "$PLUGIN_RUNNER_PS1" ]; then
+      if command -v pwsh >/dev/null 2>&1; then
+        pwsh -NoProfile -ExecutionPolicy Bypass -File "$PLUGIN_RUNNER_PS1" "$@"
+        return
+      fi
+      if command -v powershell.exe >/dev/null 2>&1; then
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$PLUGIN_RUNNER_PS1" "$@"
+        return
+      fi
+      if command -v powershell >/dev/null 2>&1; then
+        powershell -NoProfile -ExecutionPolicy Bypass -File "$PLUGIN_RUNNER_PS1" "$@"
+        return
+      fi
+    fi
+
+    echo "Could not locate a usable claudecode-sounds runner. Ask the user to reinstall the plugin or restart Claude Code." >&2
+    exit 1
+  }
+  ```
+- Validate with: `run_cli soundpack list` to check existing packs
 
 ### Step 2: Display Name
 
@@ -54,18 +118,23 @@ Sound types and their purpose:
 
 1. Create directory:
    ```bash
-   mkdir -p "$CLAUDE_PLUGIN_ROOT/soundpacks/{name}"
+   if [ -n "$PLUGIN_RUNNER_SH" ]; then
+     PLUGIN_ROOT="$(cd "$(dirname "$PLUGIN_RUNNER_SH")/.." && pwd)"
+   else
+     PLUGIN_ROOT="$(cd "$(dirname "$PLUGIN_RUNNER_PS1")/.." && pwd)"
+   fi
+   mkdir -p "$PLUGIN_ROOT/soundpacks/{name}"
    ```
 
 2. Copy each provided WAV file:
    - **Single file**: Copy as `{sound-type}.wav`
      ```bash
-     cp "{user-provided-path}" "$CLAUDE_PLUGIN_ROOT/soundpacks/{name}/{sound-type}.wav"
+     cp "{user-provided-path}" "$PLUGIN_ROOT/soundpacks/{name}/{sound-type}.wav"
      ```
    - **Multiple files**: Copy as `{sound-type}-1.wav`, `{sound-type}-2.wav`, etc.
      ```bash
-     cp "{first-path}" "$CLAUDE_PLUGIN_ROOT/soundpacks/{name}/{sound-type}-1.wav"
-     cp "{second-path}" "$CLAUDE_PLUGIN_ROOT/soundpacks/{name}/{sound-type}-2.wav"
+     cp "{first-path}" "$PLUGIN_ROOT/soundpacks/{name}/{sound-type}-1.wav"
+     cp "{second-path}" "$PLUGIN_ROOT/soundpacks/{name}/{sound-type}-2.wav"
      # ... continue for all files
      ```
 
@@ -113,7 +182,7 @@ Sound types and their purpose:
 
 4. Play a test sound to confirm:
    ```bash
-   node "$CLAUDE_PLUGIN_ROOT/hooks/cli.mjs" play complete || python3 "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" play complete || python "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" play complete || py -3 "$CLAUDE_PLUGIN_ROOT/hooks/cli.py" play complete
+   run_cli soundpack set "{name}"
    ```
 
 ## Validation Rules
